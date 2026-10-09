@@ -1,6 +1,49 @@
 import time
-import gradio as gr
+from dotenv import load_dotenv
 
+import gradio as gr
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.output_parsers import StrOutputParser
+from langchain_openai import ChatOpenAI
+from openai import OpenAI
+
+# Read environment variables from .env
+load_dotenv()
+
+# --- OpenAI Python client test ---
+client = OpenAI()
+
+response = client.chat.completions.create(
+    model='gpt-5-mini',
+    messages=[
+        {"role": "system", "content": "You are an AI assistant"},
+        {"role": "user", "content": "Hi, how are you?"},
+    ],
+    max_completion_tokens=100
+)
+
+reply = response.choices[0].message.content
+
+print(f'OpenAI client: {reply}')
+
+
+# --- LangChain ChatOpenAI test ---
+client = ChatOpenAI(
+    model="gpt-5-mini",
+)
+
+prompt = ChatPromptTemplate.from_messages([
+    ("system", "You are an AI assistant"),
+    ("human", "{message}"),
+])
+
+chain = prompt | client | StrOutputParser()
+response = chain.invoke({"message": "Hi, how are you?"})
+
+print(f'LangChain ChatOpenAI: {response}')
+
+
+# --- Gradio UI test ---
 def fake_gan():
     time.sleep(1)
     images = [
