@@ -1,0 +1,7 @@
+gradio
+ipykernel
+ipywidgets
+langchain
+langchain_openai
+openai
+python-dotenv
